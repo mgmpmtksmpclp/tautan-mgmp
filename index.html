@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulir Pendaftaran Try Out TKA - Kabupaten Cilacap</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #f3f4f6; }
+        .header-gradient { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); }
+        .custom-shadow { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); }
+        
+        /* Style khusus untuk label pertanyaan agar lebih besar dan berwarna biru */
+        .form-label {
+            display: block;
+            font-size: 1.125rem; /* Ukuran text-lg */
+            font-weight: 700;
+            color: #1e40af; /* Warna blue-800 */
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body class="min-h-screen py-8 px-4">
+
+    <div class="max-w-2xl mx-auto bg-white rounded-2xl overflow-hidden custom-shadow">
+        
+        <!-- Header Banner -->
+        <div class="header-gradient p-8 text-white text-center">
+            <h1 class="text-xl md:text-2xl font-bold uppercase tracking-tight leading-tight">
+                Panitia Try Out Tes Kemampuan Akademik
+            </h1>
+            <h2 class="text-lg md:text-xl font-bold uppercase tracking-wide mt-1">
+                Kabupaten Cilacap
+            </h2>
+            <p class="text-yellow-400 font-bold tracking-widest mt-2 uppercase text-sm md:text-base">
+                Tahun Pelajaran 2025/2026
+            </p>
+            <div class="h-1 w-24 bg-white/40 rounded-full mt-4 mx-auto"></div>
+        </div>
+
+        <!-- Info Section -->
+        <div class="p-8 border-b border-gray-100 text-left">
+            <h2 class="text-2xl font-extrabold text-gray-800 mb-4">Formulir Pendaftaran Try Out TKA</h2>
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg text-sm text-left">
+                <p class="font-bold text-blue-800 mb-1 text-base">Ketentuan:</p>
+                <ol class="list-decimal ml-5 text-gray-700 space-y-2">
+                    <li>Peserta adalah seluruh siswa SMP di Kabupaten Cilacap yang mendaftar paling lambat tanggal 14 Maret 2026.</li>
+                    <li>Kegiatan try out TKA terdiri dari mata pelajaran <b>Bahasa Indonesia dan Matematika</b> yang akan dilaksanakan pada tanggal <b>31 Maret dan 1 April 2026</b>.</li>
+                    <li>Sebelum mengisi form, silakan menyiapkan <b>bukti pembayaran dan data peserta</b> (template data peserta bisa diunduh pada tautan berikut: <a href="https://docs.google.com/spreadsheets/d/1UAfsCP3aDxaXOPhALw3mIkcnuLz6k_-vzvBnBnrCuxM/edit?usp=sharing" target="_blank" class="text-blue-600 underline font-bold hover:text-blue-800 transition-colors">Unduh Template Excel</a>).</li>
+                    <li>Setelah pendaftaran berhasil, jangan lupa untuk bergabung di group whatsapp dengan cara mengklik tautan yang muncul setelah pendaftaran terkirim.</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Main Form -->
+        <form id="registrationForm" class="p-8 space-y-8 text-left">
+            <div class="grid grid-cols-1 gap-8">
+                
+                <!-- 1. Pilih Komda -->
+                <div>
+                    <label for="komda" class="form-label">Pilih Komda *</label>
+                    <div id="dataLoader" class="text-xs text-blue-600 mb-1 hidden italic">Memuat data komda, kecamatan & sekolah...</div>
+                    <select id="komda" name="komda" required 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all text-gray-700">
+                        <option value="">-- Pilih Komda --</option>
+                    </select>
+                </div>
+
+                <!-- 2. Pilih Kecamatan -->
+                <div>
+                    <label for="kecamatan" class="form-label">Pilih Kecamatan *</label>
+                    <select id="kecamatan" name="kecamatan" required disabled
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all text-gray-700 disabled:bg-gray-100 disabled:text-gray-400">
+                        <option value="">-- Pilih Komda Terlebih Dahulu --</option>
+                    </select>
+                </div>
+
+                <!-- 3. Nama Sekolah -->
+                <div>
+                    <label for="nama_sekolah" class="form-label">Nama Sekolah *</label>
+                    <select id="nama_sekolah" name="nama_sekolah" required disabled
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all text-gray-700 disabled:bg-gray-100 disabled:text-gray-400">
+                        <option value="">-- Pilih Kecamatan Terlebih Dahulu --</option>
+                    </select>
+                </div>
+
+                <!-- Input Nama Sekolah Manual -->
+                <div id="manualSchoolContainer" class="hidden">
+                    <label for="nama_sekolah_manual" class="form-label !text-blue-600">Tulis Nama Sekolah Anda *</label>
+                    <input type="text" id="nama_sekolah_manual" name="nama_sekolah_manual" 
+                        class="w-full px-4 py-3 border border-blue-300 bg-blue-50 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                        placeholder="Ketik nama sekolah lengkap">
+                </div>
+
+                <!-- 4. NPSN -->
+                <div>
+                    <label for="npsn" class="form-label">NPSN *</label>
+                    <input type="text" id="npsn" name="npsn" required 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                        placeholder="Masukkan NPSN Sekolah">
+                </div>
+
+                <!-- 5. Jumlah Peserta -->
+                <div>
+                    <label for="jumlah_peserta" class="form-label">Jumlah Peserta *</label>
+                    <input type="number" id="jumlah_peserta" name="jumlah_peserta" required min="1"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                        placeholder="Jumlah siswa yang didaftarkan">
+                </div>
+
+                <!-- 6. Nama Penanggung Jawab -->
+                <div>
+                    <label for="nama_penanggung_jawab" class="form-label">Nama Penanggung Jawab *</label>
+                    <input type="text" id="nama_penanggung_jawab" name="nama_penanggung_jawab" required 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                        placeholder="Nama lengkap penanggung jawab">
+                </div>
+
+                <!-- 7. No HP Penanggung Jawab -->
+                <div>
+                    <label for="no_hp_penanggung_jawab" class="form-label">No HP Penanggung Jawab *</label>
+                    <input type="tel" id="no_hp_penanggung_jawab" name="no_hp_penanggung_jawab" required 
+                        minlength="10" maxlength="15" pattern="[0-9]+"
+                        title="Masukkan nomor HP yang valid (hanya angka, 10-15 digit)"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                        placeholder="Contoh: 081234567890">
+                    <div id="hpError" class="hidden text-xs text-white bg-red-600 p-2 mt-2 rounded">Nomor HP tidak valid! Harus berupa angka (10-15 digit).</div>
+                </div>
+
+                <!-- 8. Upload Data Peserta -->
+                <div id="uploadContainer">
+                    <label for="file_pendukung" class="form-label">Upload Data Peserta *</label>
+                    <input type="file" id="file_pendukung" name="file_pendukung" required
+                        accept=".xlsx, .xls, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white text-gray-700">
+                    <p class="text-xs text-gray-500 mt-2 italic font-medium">Wajib mengunggah data peserta dalam format Excel (.xlsx atau .xls) sesuai template.</p>
+                    <div id="fileError" class="hidden text-xs text-white bg-red-600 p-2 mt-2 rounded">Hanya file Excel (.xlsx atau .xls) yang diperbolehkan!</div>
+                </div>
+
+                <!-- 9. Upload Bukti Pembayaran -->
+                <div>
+                    <label for="bukti_pembayaran" class="form-label">Upload Bukti Pembayaran *</label>
+                    <input type="file" id="bukti_pembayaran" name="bukti_pembayaran" required
+                        accept=".pdf, image/jpeg, image/png, image/jpg"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white text-gray-700">
+                    <p class="text-xs text-gray-500 mt-2 italic font-medium">Unggah bukti pembayaran dalam format PDF atau Gambar (JPG/PNG).</p>
+                    <div id="buktiError" class="hidden text-xs text-white bg-red-600 p-2 mt-2 rounded">Hanya file PDF atau Gambar (JPG/JPEG/PNG) yang diperbolehkan!</div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="submitBtn"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-5 px-6 rounded-xl transition-all shadow-lg active:scale-95 flex items-center justify-center text-lg mt-4">
+                <span>Kirim Pendaftaran</span>
+            </button>
+        </form>
+
+        <div id="statusMessage" class="hidden mx-8 mb-8 p-4 rounded-lg text-center font-medium"></div>
+    </div>
+
+    <footer class="text-center mt-8 text-gray-500 text-sm pb-8">
+        &copy; 2026 Panitia Try Out TKA Kabupaten Cilacap
+    </footer>
+
+    <script>
+        const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTEo8kS2-2Xk65WnbrDOS4uF14t-I3LZ-wORtz4Y8_9sfmuLQW3OnFBxIPBr3EpdYCPCF1tSoF1QBfc/pub?output=csv";
+        
+        // PENTING: Ganti dengan URL Web App Apps Script Anda yang baru setelah deploy ulang
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx1hmv2BO_AvSS2Yrv4rXl4CQVljCzNORKmFMke0hLX57H05uNDGu1yvKwxDiILTo1IxQ/exec"; 
+
+        const form = document.getElementById('registrationForm');
+        const btn = document.getElementById('submitBtn');
+        const statusMsg = document.getElementById('statusMessage');
+        const komdaSelect = document.getElementById('komda');
+        const kecamatanSelect = document.getElementById('kecamatan');
+        const schoolSelect = document.getElementById('nama_sekolah');
+        const manualSchoolContainer = document.getElementById('manualSchoolContainer');
+        const manualSchoolInput = document.getElementById('nama_sekolah_manual');
+        const dataLoader = document.getElementById('dataLoader');
+        const fileInput = document.getElementById('file_pendukung');
+        const buktiInput = document.getElementById('bukti_pembayaran');
+        const hpInput = document.getElementById('no_hp_penanggung_jawab');
+        const fileError = document.getElementById('fileError');
+        const buktiError = document.getElementById('buktiError');
+        const hpError = document.getElementById('hpError');
+
+        let allSchoolData = [];
+
+        // Fungsi mengecek riwayat pendaftaran di perangkat ini (Local Storage)
+        function checkDuplicateRegistration(schoolName) {
+            if (!schoolName) return false;
+            const registeredSchools = JSON.parse(localStorage.getItem('registeredSchools') || '[]');
+            return registeredSchools.includes(schoolName.trim().toUpperCase());
+        }
+
+        // Fungsi mengatur tampilan jika terdeteksi duplikat
+        function handleDuplicateUI(isDuplicate) {
+            if (isDuplicate) {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+                showStatus("⚠️ Sekolah ini sudah pernah didaftarkan. Anda tidak bisa mendaftar dua kali.", "bg-red-100 text-red-700");
+            } else {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                statusMsg.classList.add('hidden');
+            }
+        }
+
+        // Fungsi khusus agar pembacaan CSV stabil meski ada karakter koma (,)
+        function parseCSVLine(str) {
+            const arr = [];
+            let quote = false;
+            let col = '';
+            for (let i = 0; i < str.length; i++) {
+                let cc = str[i], nc = str[i+1];
+                if (cc === '"' && quote && nc === '"') { col += cc; ++i; continue; }
+                if (cc === '"') { quote = !quote; continue; }
+                if (cc === ',' && !quote) { arr.push(col); col = ''; continue; }
+                col += cc;
+            }
+            arr.push(col);
+            return arr;
+        }
+
+        async function fetchData() {
+            dataLoader.classList.remove('hidden');
+            komdaSelect.disabled = true;
+            try {
+                const response = await fetch(CSV_URL);
+                const data = await response.text();
+                const rows = data.split(/\r?\n/).slice(1); 
+                
+                const komdaSet = new Set();
+
+                rows.forEach(row => {
+                    const cols = parseCSVLine(row);
+                    if (cols.length >= 5) {
+                        const schoolName = cols[0] ? cols[0].trim() : ""; // Kolom A
+                        const kecamatanName = cols[3] ? cols[3].trim() : ""; // Kolom D
+                        const komdaName = cols[4] ? cols[4].trim() : "";  // Kolom E
+                        
+                        if (schoolName && komdaName && kecamatanName) {
+                            allSchoolData.push({ school: schoolName, kecamatan: kecamatanName, komda: komdaName });
+                            komdaSet.add(komdaName);
+                        }
+                    }
+                });
+
+                const sortedKomda = Array.from(komdaSet).sort();
+                sortedKomda.forEach(k => {
+                    const option = document.createElement('option');
+                    option.value = k;
+                    option.textContent = k;
+                    komdaSelect.appendChild(option);
+                });
+
+            } catch (error) {
+                console.error("Gagal memuat data:", error);
+            } finally {
+                dataLoader.classList.add('hidden');
+                komdaSelect.disabled = false;
+            }
+        }
+
+        fetchData();
+
+        komdaSelect.addEventListener('change', (e) => {
+            const selectedKomda = e.target.value;
+            kecamatanSelect.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
+            schoolSelect.innerHTML = '<option value="">-- Pilih Kecamatan Terlebih Dahulu --</option>';
+            
+            if (selectedKomda) {
+                kecamatanSelect.disabled = false;
+                schoolSelect.disabled = true;
+                
+                const filteredKecamatan = [...new Set(allSchoolData.filter(item => item.komda === selectedKomda).map(item => item.kecamatan))];
+                
+                filteredKecamatan.sort().forEach(kec => {
+                    const option = document.createElement('option');
+                    option.value = kec;
+                    option.textContent = kec;
+                    kecamatanSelect.appendChild(option);
+                });
+            } else {
+                kecamatanSelect.innerHTML = '<option value="">-- Pilih Komda Terlebih Dahulu --</option>';
+                kecamatanSelect.disabled = true;
+                schoolSelect.disabled = true;
+            }
+            
+            schoolSelect.dispatchEvent(new Event('change'));
+        });
+
+        kecamatanSelect.addEventListener('change', (e) => {
+            const selectedKecamatan = e.target.value;
+            schoolSelect.innerHTML = '<option value="">-- Pilih Sekolah --</option>';
+            
+            if (selectedKecamatan) {
+                schoolSelect.disabled = false;
+                const filteredSchools = allSchoolData.filter(item => item.kecamatan === selectedKecamatan);
+                
+                filteredSchools.sort((a, b) => a.school.localeCompare(b.school)).forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.school;
+                    option.textContent = item.school;
+                    schoolSelect.appendChild(option);
+                });
+            } else {
+                schoolSelect.innerHTML = '<option value="">-- Pilih Kecamatan Terlebih Dahulu --</option>';
+                schoolSelect.disabled = true;
+            }
+            
+            const lainOption = document.createElement('option');
+            lainOption.value = "Lainnya";
+            lainOption.textContent = "Lainnya / Sekolah Tidak Terdaftar";
+            schoolSelect.appendChild(lainOption);
+            
+            schoolSelect.dispatchEvent(new Event('change'));
+        });
+
+        schoolSelect.addEventListener('change', (e) => {
+            if (e.target.value === 'Lainnya') {
+                manualSchoolContainer.classList.remove('hidden');
+                manualSchoolInput.required = true;
+                handleDuplicateUI(false);
+            } else {
+                manualSchoolContainer.classList.add('hidden');
+                manualSchoolInput.required = false;
+                manualSchoolInput.value = "";
+                
+                const isDuplicate = checkDuplicateRegistration(e.target.value);
+                handleDuplicateUI(isDuplicate);
+            }
+        });
+
+        manualSchoolInput.addEventListener('input', (e) => {
+            const isDuplicate = checkDuplicateRegistration(e.target.value);
+            handleDuplicateUI(isDuplicate);
+        });
+
+        // Validasi ekstensi Data Peserta (Excel)
+        fileInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const fileName = file.name.toLowerCase();
+                const isExcel = fileName.endsWith('.xlsx') || fileName.endsWith('.xls');
+                if (!isExcel) {
+                    fileError.classList.remove('hidden');
+                    this.value = ''; 
+                } else {
+                    fileError.classList.add('hidden');
+                }
+            }
+        });
+
+        // Validasi ekstensi Bukti Pembayaran (PDF/Gambar)
+        buktiInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const fileName = file.name.toLowerCase();
+                const fileType = file.type;
+                const isValid = fileName.endsWith('.pdf') || fileType === 'application/pdf' || fileType.startsWith('image/');
+                
+                if (!isValid) {
+                    buktiError.classList.remove('hidden');
+                    this.value = ''; 
+                } else {
+                    buktiError.classList.add('hidden');
+                }
+            }
+        });
+
+        // Validasi No HP (Real-time hapus karakter non-angka)
+        hpInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, ''); // Hanya sisakan angka
+            
+            if (this.value.length > 0 && (this.value.length < 10 || this.value.length > 15)) {
+                hpError.classList.remove('hidden');
+            } else {
+                hpError.classList.add('hidden');
+            }
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Verifikasi ganda sebelum submit
+            let finalSchoolName = schoolSelect.value === 'Lainnya' ? manualSchoolInput.value : schoolSelect.value;
+            if (checkDuplicateRegistration(finalSchoolName)) {
+                handleDuplicateUI(true);
+                return;
+            }
+            
+            if (hpInput.value.length < 10 || hpInput.value.length > 15) {
+                hpError.classList.remove('hidden');
+                hpInput.focus();
+                return;
+            }
+
+            if (fileInput.files.length > 0) {
+                const fileName = fileInput.files[0].name.toLowerCase();
+                if (!(fileName.endsWith('.xlsx') || fileName.endsWith('.xls'))) {
+                    fileError.classList.remove('hidden');
+                    return;
+                }
+            }
+
+            if (buktiInput.files.length > 0) {
+                const file = buktiInput.files[0];
+                const fileName = file.name.toLowerCase();
+                const fileType = file.type;
+                const isValid = fileName.endsWith('.pdf') || fileType === 'application/pdf' || fileType.startsWith('image/');
+                if (!isValid) {
+                    buktiError.classList.remove('hidden');
+                    return;
+                }
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="animate-spin mr-2">⏳</span> Sedang Mengirim...';
+            statusMsg.classList.add('hidden');
+
+            const formData = new FormData(form);
+            const dataObj = Object.fromEntries(formData.entries());
+
+            if (dataObj.nama_sekolah === 'Lainnya') {
+                dataObj.nama_sekolah = dataObj.nama_sekolah_manual;
+            }
+
+            try {
+                // Proses Excel File
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    dataObj.file_data = await toBase64(file);
+                    dataObj.file_name = file.name;
+                    dataObj.file_type = file.type;
+                }
+
+                // Proses Bukti Pembayaran
+                if (buktiInput.files.length > 0) {
+                    const buktiFile = buktiInput.files[0];
+                    dataObj.bukti_data = await toBase64(buktiFile);
+                    dataObj.bukti_name = buktiFile.name;
+                    dataObj.bukti_type = buktiFile.type;
+                }
+
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify(dataObj)
+                });
+
+                // Simpan nama sekolah ke Local Storage setelah berhasil
+                const registeredSchools = JSON.parse(localStorage.getItem('registeredSchools') || '[]');
+                if (!registeredSchools.includes(finalSchoolName.trim().toUpperCase())) {
+                    registeredSchools.push(finalSchoolName.trim().toUpperCase());
+                    localStorage.setItem('registeredSchools', JSON.stringify(registeredSchools));
+                }
+
+                // LAKUKAN RESET FORM TERLEBIH DAHULU
+                form.reset();
+                komdaSelect.dispatchEvent(new Event('change')); 
+                manualSchoolContainer.classList.add('hidden');
+                
+                // TAMPILKAN NOTIFIKASI
+                showStatus(`Pendaftaran Berhasil! Terima kasih.<br>Silakan bergabung ke <a href="https://chat.whatsapp.com/Ev1nBcljdrSI2FFAn65wqD" target="_blank" class="font-bold underline text-red-600 hover:text-red-800">Grup WhatsApp</a>.`, "bg-green-100 text-green-700");
+                
+                setTimeout(() => {
+                    statusMsg.classList.add('hidden');
+                }, 30000);
+
+            } catch (err) {
+                showStatus("Gagal mengirim data. Pastikan koneksi internet stabil.", "bg-red-100 text-red-700");
+                setTimeout(() => {
+                    statusMsg.classList.add('hidden');
+                }, 5000);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Kirim Pendaftaran';
+            }
+        });
+
+        const toBase64 = file => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result.split(',')[1]);
+            reader.onerror = error => reject(error);
+        });
+
+        function showStatus(msg, classes) {
+            statusMsg.innerHTML = msg;
+            statusMsg.className = `mx-8 mb-8 p-4 rounded-lg text-center font-medium ${classes}`;
+            statusMsg.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
