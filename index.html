@@ -44,9 +44,9 @@
             <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg text-sm text-left">
                 <p class="font-bold text-blue-800 mb-1 text-base">Ketentuan:</p>
                 <ol class="list-decimal ml-5 text-gray-700 space-y-2">
-                    <li>Peserta adalah seluruh siswa SMP di Kabupaten Cilacap yang mendaftar paling lambat tanggal 12 Maret 2026.</li>
+                    <li>Peserta adalah seluruh siswa SMP di Kabupaten Cilacap yang mendaftar paling lambat tanggal 14 Maret 2026.</li>
                     <li>Kegiatan try out TKA terdiri dari mata pelajaran <b>Bahasa Indonesia dan Matematika</b> yang akan dilaksanakan pada tanggal <b>31 Maret dan 1 April 2026</b>.</li>
-                    <li>Sebelum mengisi form, silakan menyiapkan <b>bukti pembayaran dan data peserta</b> (template data peserta bisa diunduh pada tautan berikut: <a href="https://docs.google.com/spreadsheets/d/1UAfsCP3aDxaXOPhALw3mIkcnuLz6k_-vzvBnBnrCuxM/edit?usp=sharing" target="_blank" class="text-blue-600 underline font-bold hover:text-blue-800 transition-colors">Unduh Template Excel</a>).</li>
+                    <li>Sebelum mengisi form, silakan menyiapkan <b>data peserta</b> (template data peserta bisa diunduh pada tautan berikut: <a href="https://docs.google.com/spreadsheets/d/1UAfsCP3aDxaXOPhALw3mIkcnuLz6k_-vzvBnBnrCuxM/edit?usp=sharing" target="_blank" class="text-blue-600 underline font-bold hover:text-blue-800 transition-colors">Unduh Template Excel</a>).</li>
                     <li>Setelah pendaftaran berhasil, jangan lupa untuk bergabung di group whatsapp dengan cara mengklik tautan yang muncul setelah pendaftaran terkirim.</li>
                 </ol>
             </div>
@@ -136,16 +136,6 @@
                     <p class="text-xs text-gray-500 mt-2 italic font-medium">Wajib mengunggah data peserta dalam format Excel (.xlsx atau .xls) sesuai template.</p>
                     <div id="fileError" class="hidden text-xs text-white bg-red-600 p-2 mt-2 rounded">Hanya file Excel (.xlsx atau .xls) yang diperbolehkan!</div>
                 </div>
-
-                <!-- 9. Upload Bukti Pembayaran -->
-                <div>
-                    <label for="bukti_pembayaran" class="form-label">Upload Bukti Pembayaran *</label>
-                    <input type="file" id="bukti_pembayaran" name="bukti_pembayaran" required
-                        accept=".pdf, image/jpeg, image/png, image/jpg"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white text-gray-700">
-                    <p class="text-xs text-gray-500 mt-2 italic font-medium">Unggah bukti pembayaran dalam format PDF atau Gambar (JPG/PNG).</p>
-                    <div id="buktiError" class="hidden text-xs text-white bg-red-600 p-2 mt-2 rounded">Hanya file PDF atau Gambar (JPG/JPEG/PNG) yang diperbolehkan!</div>
-                </div>
             </div>
 
             <!-- Submit Button -->
@@ -178,10 +168,8 @@
         const manualSchoolInput = document.getElementById('nama_sekolah_manual');
         const dataLoader = document.getElementById('dataLoader');
         const fileInput = document.getElementById('file_pendukung');
-        const buktiInput = document.getElementById('bukti_pembayaran');
         const hpInput = document.getElementById('no_hp_penanggung_jawab');
         const fileError = document.getElementById('fileError');
-        const buktiError = document.getElementById('buktiError');
         const hpError = document.getElementById('hpError');
 
         let allSchoolData = [];
@@ -352,23 +340,6 @@
             }
         });
 
-        // Validasi ekstensi Bukti Pembayaran (PDF/Gambar)
-        buktiInput.addEventListener('change', function() {
-            const file = this.files[0];
-            if (file) {
-                const fileName = file.name.toLowerCase();
-                const fileType = file.type;
-                const isValid = fileName.endsWith('.pdf') || fileType === 'application/pdf' || fileType.startsWith('image/');
-                
-                if (!isValid) {
-                    buktiError.classList.remove('hidden');
-                    this.value = ''; 
-                } else {
-                    buktiError.classList.add('hidden');
-                }
-            }
-        });
-
         // Validasi No HP (Real-time hapus karakter non-angka)
         hpInput.addEventListener('input', function() {
             this.value = this.value.replace(/[^0-9]/g, ''); // Hanya sisakan angka
@@ -404,17 +375,6 @@
                 }
             }
 
-            if (buktiInput.files.length > 0) {
-                const file = buktiInput.files[0];
-                const fileName = file.name.toLowerCase();
-                const fileType = file.type;
-                const isValid = fileName.endsWith('.pdf') || fileType === 'application/pdf' || fileType.startsWith('image/');
-                if (!isValid) {
-                    buktiError.classList.remove('hidden');
-                    return;
-                }
-            }
-
             btn.disabled = true;
             btn.innerHTML = '<span class="animate-spin mr-2">⏳</span> Sedang Mengirim...';
             statusMsg.classList.add('hidden');
@@ -433,14 +393,6 @@
                     dataObj.file_data = await toBase64(file);
                     dataObj.file_name = file.name;
                     dataObj.file_type = file.type;
-                }
-
-                // Proses Bukti Pembayaran
-                if (buktiInput.files.length > 0) {
-                    const buktiFile = buktiInput.files[0];
-                    dataObj.bukti_data = await toBase64(buktiFile);
-                    dataObj.bukti_name = buktiFile.name;
-                    dataObj.bukti_type = buktiFile.type;
                 }
 
                 await fetch(SCRIPT_URL, {
@@ -462,7 +414,7 @@
                 manualSchoolContainer.classList.add('hidden');
                 
                 // TAMPILKAN NOTIFIKASI
-                showStatus(`Pendaftaran Berhasil! Terima kasih.<br>Silakan bergabung ke <a href="https://chat.whatsapp.com/LPDfkl7tpES0wbOoWVFhWa" target="_blank" class="font-bold underline text-red-600 hover:text-red-800">Grup WhatsApp</a>.`, "bg-green-100 text-green-700");
+                showStatus(`Pendaftaran Berhasil! Terima kasih.<br>Silakan bergabung ke <a href="https://chat.whatsapp.com/Ev1nBcljdrSI2FFAn65wqD" target="_blank" class="font-bold underline text-red-600 hover:text-red-800">Grup WhatsApp</a>.`, "bg-green-100 text-green-700");
                 
                 setTimeout(() => {
                     statusMsg.classList.add('hidden');
