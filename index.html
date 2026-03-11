@@ -44,12 +44,21 @@
             <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg text-sm text-left">
                 <p class="font-bold text-blue-800 mb-1 text-base">Ketentuan:</p>
                 <ol class="list-decimal ml-5 text-gray-700 space-y-2">
-                    <li>Peserta adalah seluruh siswa SMP di Kabupaten Cilacap yang mendaftar paling lambat tanggal 14 Maret 2026.</li>
+                    <li>Peserta adalah seluruh siswa SMP di Kabupaten Cilacap yang mendaftar paling lambat tanggal 12 Maret 2026 <span class="text-red-600 font-bold">pukul 20.00 WIB</span>.</li>
                     <li>Kegiatan try out TKA terdiri dari mata pelajaran <b>Bahasa Indonesia dan Matematika</b> yang akan dilaksanakan pada tanggal <b>31 Maret dan 1 April 2026</b>.</li>
                     <li>Sebelum mengisi form, silakan menyiapkan <b>data peserta</b> (template data peserta bisa diunduh pada tautan berikut: <a href="https://docs.google.com/spreadsheets/d/1UAfsCP3aDxaXOPhALw3mIkcnuLz6k_-vzvBnBnrCuxM/edit?usp=sharing" target="_blank" class="text-blue-600 underline font-bold hover:text-blue-800 transition-colors">Unduh Template Excel</a>).</li>
                     <li>Setelah pendaftaran berhasil, jangan lupa untuk bergabung di group whatsapp dengan cara mengklik tautan yang muncul setelah pendaftaran terkirim.</li>
                 </ol>
             </div>
+        </div>
+
+        <!-- Pesan Penutupan (Awalnya Sembunyi) -->
+        <div id="closedMessage" class="hidden p-8 text-center space-y-4">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 mb-2">
+                <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <h3 class="text-2xl font-extrabold text-gray-800">Pendaftaran Telah Ditutup</h3>
+            <p class="text-gray-600 font-medium">Mohon maaf, batas waktu pendaftaran Try Out TKA telah berakhir pada <span class="font-bold text-gray-800">12 Maret 2026, pukul 20.00 WIB</span>.</p>
         </div>
 
         <!-- Main Form -->
@@ -171,6 +180,18 @@
         const hpInput = document.getElementById('no_hp_penanggung_jawab');
         const fileError = document.getElementById('fileError');
         const hpError = document.getElementById('hpError');
+        const closedMessage = document.getElementById('closedMessage');
+
+        // === PENGATURAN BATAS WAKTU PENDAFTARAN ===
+        // Format: YYYY-MM-DDTHH:mm:ss+07:00 (WIB)
+        const DEADLINE = new Date('2026-03-12T20:00:00+07:00');
+        const isClosed = new Date() > DEADLINE;
+
+        // Jika sudah lewat batas waktu, sembunyikan form dan tampilkan pesan tutup
+        if (isClosed) {
+            form.classList.add('hidden');
+            closedMessage.classList.remove('hidden');
+        }
 
         let allSchoolData = [];
 
@@ -250,7 +271,10 @@
             }
         }
 
-        fetchData();
+        // Hanya muat data CSV jika pendaftaran belum ditutup
+        if (!isClosed) {
+            fetchData();
+        }
 
         komdaSelect.addEventListener('change', (e) => {
             const selectedKomda = e.target.value;
@@ -414,7 +438,7 @@
                 manualSchoolContainer.classList.add('hidden');
                 
                 // TAMPILKAN NOTIFIKASI
-                showStatus(`Pendaftaran Berhasil! Terima kasih.<br>Silakan bergabung ke <a href="https://chat.whatsapp.com/LPDfkl7tpES0wbOoWVFhWa" target="_blank" class="font-bold underline text-red-600 hover:text-red-800">Grup WhatsApp</a>.`, "bg-green-100 text-green-700");
+                showStatus(`Pendaftaran Berhasil! Terima kasih.<br>Silakan bergabung ke <a href="https://chat.whatsapp.com/Ev1nBcljdrSI2FFAn65wqD" target="_blank" class="font-bold underline text-red-600 hover:text-red-800">Grup WhatsApp</a>.`, "bg-green-100 text-green-700");
                 
                 setTimeout(() => {
                     statusMsg.classList.add('hidden');
