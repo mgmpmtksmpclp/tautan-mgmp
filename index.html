@@ -20,7 +20,7 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen text-white font-sans antialiased flex flex-col items-center py-12 px-4 relative">
+<body class="bg-gradient-to-b from-[#422473] to-[#5d2b86] min-h-screen text-white font-sans antialiased flex flex-col items-center py-12 px-4 relative">
 
     <!-- Tombol Toggle Edit Mode -->
     <button onclick="requestEditMode()" class="fixed bottom-6 right-6 bg-purple-600 hover:bg-purple-500 text-white w-14 h-14 rounded-full shadow-2xl z-40 transition-transform transform hover:scale-110 flex items-center justify-center border-2 border-white/10">
@@ -28,24 +28,21 @@
     </button>
 
     <!-- Kontainer Utama -->
-    <div class="w-full max-w-md bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-2xl p-8 transition-all duration-300 relative">
+    <div class="w-full max-w-md p-4 transition-all duration-300 relative">
         
         <!-- Badge Mode Edit -->
-        <div id="edit-badge" class="hidden absolute -top-3 -right-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow">
+        <div id="edit-badge" class="hidden absolute -top-3 -right-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow z-10">
             Mode Edit Aktif
         </div>
 
         <!-- Header / Profil -->
-        <div class="text-center mb-8">
-            <div class="w-24 h-24 mx-auto bg-gradient-to-tr from-blue-500 to-purple-500 rounded-full flex items-center justify-center shadow-lg mb-4 text-3xl">
-                <i class="fas fa-code text-white"></i>
-            </div>
+        <div class="text-center mb-8 px-2">
             <!-- Elemen ini akan berubah menjadi input saat Mode Edit aktif -->
             <div id="page-title-container">
-                <h1 id="page-title" class="text-2xl font-bold tracking-wide text-gray-100"></h1>
+                <h1 id="page-title" class="text-2xl md:text-3xl font-extrabold tracking-wide text-white uppercase drop-shadow-md"></h1>
             </div>
-            <div id="page-bio-container" class="mt-2">
-                <p id="page-bio" class="text-gray-300 text-sm leading-relaxed"></p>
+            <div id="page-bio-container" class="mt-4">
+                <p id="page-bio" class="text-[#e2d5f8] text-[15px] leading-relaxed drop-shadow-sm"></p>
             </div>
         </div>
 
@@ -114,21 +111,22 @@
     <!-- SCRIPT LOGIKA APLIKASI -->
     <script>
         // PIN Rahasia untuk masuk ke Mode Edit (Ubah sesuai keinginan Anda)
-        const ADMIN_PIN = "wa1921am";
+        const ADMIN_PIN = "123456";
 
         // Data Default (jika belum ada data di penyimpanan browser)
         const defaultData = {
-            title: "MGMP Dev Hub",
-            bio: "Selamat datang di halaman kumpulan tautan saya. Silakan pilih salah satu menu di bawah ini untuk melihat portofolio dan proyek saya.",
+            title: "MGMP MATEMATIKA SMP CILACAP",
+            bio: "Selamat datang di halaman kumpulan tautan MGMP Matematika SMP Kabupaten Cilacap",
             buttons: [
-                { text: "Portofolio Website", url: "https://example.com/portfolio", icon: "fas fa-globe", classColor: "bg-blue-600 hover:bg-blue-500" },
-                { text: "Repository GitHub", url: "https://github.com", icon: "fab fa-github", classColor: "bg-gray-800 hover:bg-gray-700" },
-                { text: "Hubungi via WhatsApp", url: "https://wa.me/6281234567890", icon: "fab fa-whatsapp", classColor: "bg-green-600 hover:bg-green-500" }
+                { text: "Tautan LMS", url: "https://lomba-mtk.asesmen.web.id/my/", icon: "fas fa-globe", classColor: "bg-[#2563eb] hover:bg-blue-600" },
+                { text: "Tautan Proktor", url: "https://lomba-mtk.asesmen.web.id/cbtadmin/", icon: "fab fa-github", classColor: "bg-[#242938] hover:bg-[#1a1e2a]" },
+                { text: "Akun Proktor", url: "https://drive.google.com/file/d/1Dm2KU7fyTyT6k0SVYhUW0cZv6vM5Z5aG/view", icon: "fab fa-whatsapp", classColor: "bg-[#1ca34a] hover:bg-green-600" },
+                { text: "Akun Peserta", url: "https://mgmpmtksmpclp.github.io/akun-peserta/", icon: "fas fa-link", classColor: "bg-[#2563eb] hover:bg-blue-600" }
             ]
         };
 
-        // Ambil data dari Local Storage atau gunakan default
-        let appData = JSON.parse(localStorage.getItem('devHubData')) || defaultData;
+        // Ambil data dari Local Storage atau gunakan default (Key diubah agar mereset dengan desain baru)
+        let appData = JSON.parse(localStorage.getItem('mgmpData_v2')) || defaultData;
         
         let isEditMode = false;
         let currentEditIndex = -1; // -1 berarti tambah tombol baru
@@ -141,7 +139,7 @@
 
         // Fungsi Simpan ke Local Storage
         function saveData() {
-            localStorage.setItem('devHubData', JSON.stringify(appData));
+            localStorage.setItem('mgmpData_v2', JSON.stringify(appData));
         }
 
         // Fungsi Meminta Masuk Mode Edit
@@ -211,26 +209,26 @@
 
                 // Tombol Tambah Baru
                 btnContainer.innerHTML += `
-                    <button onclick="openModal(-1)" class="w-full py-4 mt-2 border-2 border-dashed border-gray-500 text-gray-400 rounded-xl hover:border-purple-400 hover:text-purple-400 transition-all hover:bg-purple-900/20 font-medium">
+                    <button onclick="openModal(-1)" class="w-full py-4 mt-2 border-2 border-dashed border-gray-400/50 text-gray-300 rounded-xl hover:border-white hover:text-white transition-all hover:bg-white/10 font-medium">
                         <i class="fas fa-plus mr-2"></i> Tambah Tautan Baru
                     </button>
                 `;
 
             } else {
                 // TAMPILAN NORMAL (PENGUNJUNG)
-                titleContainer.innerHTML = `<h1 id="page-title" class="text-2xl font-bold tracking-wide text-gray-100">${appData.title}</h1>`;
-                bioContainer.innerHTML = `<p id="page-bio" class="text-gray-300 text-sm leading-relaxed">${appData.bio}</p>`;
+                titleContainer.innerHTML = `<h1 id="page-title" class="text-2xl md:text-[26px] font-extrabold tracking-wide text-white uppercase drop-shadow-md leading-tight">${appData.title}</h1>`;
+                bioContainer.innerHTML = `<p id="page-bio" class="text-[#e2d5f8] text-[15px] leading-relaxed px-2 drop-shadow-sm">${appData.bio}</p>`;
 
                 btnContainer.innerHTML = '';
                 appData.buttons.forEach((btn, index) => {
                     btnContainer.innerHTML += `
                         <a href="${btn.url}" target="_blank" rel="noopener noreferrer" 
-                           class="btn-animate flex items-center p-4 rounded-xl text-white font-medium shadow-lg transition-transform duration-200 transform hover:scale-105 active:scale-95 ${btn.classColor}"
+                           class="btn-animate flex items-center p-[18px] rounded-xl text-white font-bold shadow-md transition-transform duration-200 transform hover:scale-105 active:scale-95 ${btn.classColor}"
                            style="animation-delay: ${index * 0.1}s">
-                            <div class="w-10 flex justify-center text-xl">
+                            <div class="w-10 flex justify-center text-[22px]">
                                 <i class="${btn.icon}"></i>
                             </div>
-                            <div class="flex-grow text-center pr-10">
+                            <div class="flex-grow text-center pr-10 text-[16px]">
                                 ${btn.text}
                             </div>
                         </a>
