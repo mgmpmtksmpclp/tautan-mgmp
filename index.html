@@ -3,469 +3,306 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulir Pendaftaran Try Out TKA - Kabupaten Cilacap</title>
+    <title>Hub Tombol Developer</title>
+    <!-- Tailwind CSS untuk Styling -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome untuk Ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background-color: #f3f4f6; }
-        .header-gradient { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); }
-        .custom-shadow { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); }
-        
-        /* Style khusus untuk label pertanyaan agar lebih besar dan berwarna biru */
-        .form-label {
-            display: block;
-            font-size: 1.125rem; /* Ukuran text-lg */
-            font-weight: 700;
-            color: #1e40af; /* Warna blue-800 */
-            margin-bottom: 0.5rem;
+        /* Animasi sederhana untuk tombol saat dimuat */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .btn-animate {
+            animation: fadeIn 0.4s ease-out forwards;
+            opacity: 0; /* Mulai dari transparan sebelum animasi */
         }
     </style>
 </head>
-<body class="min-h-screen py-8 px-4">
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen text-white font-sans antialiased flex flex-col items-center py-12 px-4 relative">
 
-    <div class="max-w-2xl mx-auto bg-white rounded-2xl overflow-hidden custom-shadow">
+    <!-- Tombol Toggle Edit Mode -->
+    <button onclick="requestEditMode()" class="fixed bottom-6 right-6 bg-purple-600 hover:bg-purple-500 text-white w-14 h-14 rounded-full shadow-2xl z-40 transition-transform transform hover:scale-110 flex items-center justify-center border-2 border-white/10">
+        <i id="toggle-icon" class="fas fa-cog text-xl"></i>
+    </button>
+
+    <!-- Kontainer Utama -->
+    <div class="w-full max-w-md bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-2xl p-8 transition-all duration-300 relative">
         
-        <!-- Header Banner -->
-        <div class="header-gradient p-8 text-white text-center">
-            <h1 class="text-xl md:text-2xl font-bold uppercase tracking-tight leading-tight">
-                Panitia Try Out Tes Kemampuan Akademik
-            </h1>
-            <h2 class="text-lg md:text-xl font-bold uppercase tracking-wide mt-1">
-                Kabupaten Cilacap
-            </h2>
-            <p class="text-yellow-400 font-bold tracking-widest mt-2 uppercase text-sm md:text-base">
-                Tahun Pelajaran 2025/2026
-            </p>
-            <div class="h-1 w-24 bg-white/40 rounded-full mt-4 mx-auto"></div>
+        <!-- Badge Mode Edit -->
+        <div id="edit-badge" class="hidden absolute -top-3 -right-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow">
+            Mode Edit Aktif
         </div>
 
-        <!-- Info Section -->
-        <div class="p-8 border-b border-gray-100 text-left">
-            <h2 class="text-2xl font-extrabold text-gray-800 mb-4">Formulir Pendaftaran Try Out TKA</h2>
-            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg text-sm text-left">
-                <p class="font-bold text-blue-800 mb-1 text-base">Ketentuan:</p>
-                <ol class="list-decimal ml-5 text-gray-700 space-y-2">
-                    <li>Peserta adalah seluruh siswa SMP di Kabupaten Cilacap yang mendaftar paling lambat tanggal 12 Maret 2026 <span class="text-red-600 font-bold">pukul 20.00 WIB</span>.</li>
-                    <li>Kegiatan try out TKA terdiri dari mata pelajaran <b>Bahasa Indonesia dan Matematika</b> yang akan dilaksanakan pada tanggal <b>31 Maret dan 1 April 2026</b>.</li>
-                    <li>Sebelum mengisi form, silakan menyiapkan <b>data peserta</b> (template data peserta bisa diunduh pada tautan berikut: <a href="https://docs.google.com/spreadsheets/d/1UAfsCP3aDxaXOPhALw3mIkcnuLz6k_-vzvBnBnrCuxM/edit?usp=sharing" target="_blank" class="text-blue-600 underline font-bold hover:text-blue-800 transition-colors">Unduh Template Excel</a>).</li>
-                    <li>Setelah pendaftaran berhasil, jangan lupa untuk bergabung di group whatsapp dengan cara mengklik tautan yang muncul setelah pendaftaran terkirim.</li>
-                </ol>
+        <!-- Header / Profil -->
+        <div class="text-center mb-8">
+            <div class="w-24 h-24 mx-auto bg-gradient-to-tr from-blue-500 to-purple-500 rounded-full flex items-center justify-center shadow-lg mb-4 text-3xl">
+                <i class="fas fa-code text-white"></i>
+            </div>
+            <!-- Elemen ini akan berubah menjadi input saat Mode Edit aktif -->
+            <div id="page-title-container">
+                <h1 id="page-title" class="text-2xl font-bold tracking-wide text-gray-100"></h1>
+            </div>
+            <div id="page-bio-container" class="mt-2">
+                <p id="page-bio" class="text-gray-300 text-sm leading-relaxed"></p>
             </div>
         </div>
 
-        <!-- Pesan Penutupan (Awalnya Sembunyi) -->
-        <div id="closedMessage" class="hidden p-8 text-center space-y-4">
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 mb-2">
-                <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            </div>
-            <h3 class="text-2xl font-extrabold text-gray-800">Pendaftaran Telah Ditutup</h3>
-            <p class="text-gray-600 font-medium">Mohon maaf, batas waktu pendaftaran Try Out TKA telah berakhir pada <span class="font-bold text-gray-800">12 Maret 2026, pukul 20.00 WIB</span>.</p>
+        <!-- Tempat Tombol-Tombol Akan Dirender -->
+        <div id="button-container" class="flex flex-col gap-4">
+            <!-- Tombol akan di-generate oleh JavaScript di sini -->
         </div>
 
-        <!-- Main Form -->
-        <form id="registrationForm" class="p-8 space-y-8 text-left">
-            <div class="grid grid-cols-1 gap-8">
-                
-                <!-- 1. Pilih Komda -->
-                <div>
-                    <label for="komda" class="form-label">Pilih Komda *</label>
-                    <div id="dataLoader" class="text-xs text-blue-600 mb-1 hidden italic">Memuat data komda, kecamatan & sekolah...</div>
-                    <select id="komda" name="komda" required 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all text-gray-700">
-                        <option value="">-- Pilih Komda --</option>
-                    </select>
-                </div>
-
-                <!-- 2. Pilih Kecamatan -->
-                <div>
-                    <label for="kecamatan" class="form-label">Pilih Kecamatan *</label>
-                    <select id="kecamatan" name="kecamatan" required disabled
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all text-gray-700 disabled:bg-gray-100 disabled:text-gray-400">
-                        <option value="">-- Pilih Komda Terlebih Dahulu --</option>
-                    </select>
-                </div>
-
-                <!-- 3. Nama Sekolah -->
-                <div>
-                    <label for="nama_sekolah" class="form-label">Nama Sekolah *</label>
-                    <select id="nama_sekolah" name="nama_sekolah" required disabled
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all text-gray-700 disabled:bg-gray-100 disabled:text-gray-400">
-                        <option value="">-- Pilih Kecamatan Terlebih Dahulu --</option>
-                    </select>
-                </div>
-
-                <!-- Input Nama Sekolah Manual -->
-                <div id="manualSchoolContainer" class="hidden">
-                    <label for="nama_sekolah_manual" class="form-label !text-blue-600">Tulis Nama Sekolah Anda *</label>
-                    <input type="text" id="nama_sekolah_manual" name="nama_sekolah_manual" 
-                        class="w-full px-4 py-3 border border-blue-300 bg-blue-50 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                        placeholder="Ketik nama sekolah lengkap">
-                </div>
-
-                <!-- 4. NPSN -->
-                <div>
-                    <label for="npsn" class="form-label">NPSN *</label>
-                    <input type="text" id="npsn" name="npsn" required 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                        placeholder="Masukkan NPSN Sekolah">
-                </div>
-
-                <!-- 5. Jumlah Peserta -->
-                <div>
-                    <label for="jumlah_peserta" class="form-label">Jumlah Peserta *</label>
-                    <input type="number" id="jumlah_peserta" name="jumlah_peserta" required min="1"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                        placeholder="Jumlah siswa yang didaftarkan">
-                </div>
-
-                <!-- 6. Nama Penanggung Jawab -->
-                <div>
-                    <label for="nama_penanggung_jawab" class="form-label">Nama Penanggung Jawab *</label>
-                    <input type="text" id="nama_penanggung_jawab" name="nama_penanggung_jawab" required 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                        placeholder="Nama lengkap penanggung jawab">
-                </div>
-
-                <!-- 7. No HP Penanggung Jawab -->
-                <div>
-                    <label for="no_hp_penanggung_jawab" class="form-label">No HP Penanggung Jawab *</label>
-                    <input type="tel" id="no_hp_penanggung_jawab" name="no_hp_penanggung_jawab" required 
-                        minlength="10" maxlength="15" pattern="[0-9]+"
-                        title="Masukkan nomor HP yang valid (hanya angka, 10-15 digit)"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                        placeholder="Contoh: 081234567890">
-                    <div id="hpError" class="hidden text-xs text-white bg-red-600 p-2 mt-2 rounded">Nomor HP tidak valid! Harus berupa angka (10-15 digit).</div>
-                </div>
-
-                <!-- 8. Upload Data Peserta -->
-                <div id="uploadContainer">
-                    <label for="file_pendukung" class="form-label">Upload Data Peserta *</label>
-                    <input type="file" id="file_pendukung" name="file_pendukung" required
-                        accept=".xlsx, .xls, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white text-gray-700">
-                    <p class="text-xs text-gray-500 mt-2 italic font-medium">Wajib mengunggah data peserta dalam format Excel (.xlsx atau .xls) sesuai template.</p>
-                    <div id="fileError" class="hidden text-xs text-white bg-red-600 p-2 mt-2 rounded">Hanya file Excel (.xlsx atau .xls) yang diperbolehkan!</div>
-                </div>
-            </div>
-
-            <!-- Submit Button -->
-            <button type="submit" id="submitBtn"
-                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-5 px-6 rounded-xl transition-all shadow-lg active:scale-95 flex items-center justify-center text-lg mt-4">
-                <span>Kirim Pendaftaran</span>
-            </button>
-        </form>
-
-        <div id="statusMessage" class="hidden mx-8 mb-8 p-4 rounded-lg text-center font-medium"></div>
+        <!-- Footer -->
+        <div class="mt-10 text-center text-xs text-gray-400">
+            <p>&copy; <span id="year"></span> | Dibuat oleh <span class="font-semibold text-purple-400">MGMP Matematika SMP Cilacap</span></p>
+        </div>
     </div>
 
-    <footer class="text-center mt-8 text-gray-500 text-sm pb-8">
-        &copy; 2026 Panitia Try Out TKA Kabupaten Cilacap
-    </footer>
+    <!-- Modal Form (Untuk Tambah/Edit Tombol) -->
+    <div id="edit-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+        <div class="bg-slate-800 border border-slate-600 rounded-xl w-full max-w-sm p-6 shadow-2xl">
+            <h2 id="modal-title" class="text-xl font-bold mb-4 text-white">Edit Tombol</h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">Nama Tombol</label>
+                    <input type="text" id="m-text" class="w-full bg-slate-700 text-white rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-purple-500 border border-slate-600">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">URL / Tautan Tujuan</label>
+                    <input type="text" id="m-url" class="w-full bg-slate-700 text-white rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-purple-500 border border-slate-600">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">Class Ikon (FontAwesome)</label>
+                    <input type="text" id="m-icon" class="w-full bg-slate-700 text-white rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-purple-500 border border-slate-600">
+                    <p class="text-[10px] text-gray-400 mt-1">Contoh: fas fa-globe, fab fa-instagram</p>
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">Warna Tombol (Tailwind)</label>
+                    <input type="text" id="m-color" class="w-full bg-slate-700 text-white rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-purple-500 border border-slate-600">
+                    <p class="text-[10px] text-gray-400 mt-1">Contoh: bg-blue-600 hover:bg-blue-500</p>
+                </div>
+            </div>
 
+            <div class="mt-6 flex justify-end gap-3">
+                <button onclick="closeModal()" class="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors">Batal</button>
+                <button onclick="saveModalBtn()" class="px-4 py-2 text-sm font-medium bg-purple-600 hover:bg-purple-500 text-white rounded-lg shadow transition-colors">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Form (Untuk Autentikasi PIN) -->
+    <div id="auth-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+        <div class="bg-slate-800 border border-slate-600 rounded-xl w-full max-w-xs p-6 shadow-2xl text-center">
+            <i class="fas fa-lock text-4xl text-purple-500 mb-4"></i>
+            <h2 class="text-xl font-bold mb-2 text-white">Masukkan PIN</h2>
+            <p class="text-xs text-gray-400 mb-5">Hanya admin yang dapat masuk ke mode edit.</p>
+            
+            <input type="password" id="pin-input" class="w-full bg-slate-700 text-center text-white text-2xl rounded-lg p-3 mb-2 focus:outline-none focus:ring-2 focus:ring-purple-500 border border-slate-600 tracking-[0.5em]" placeholder="****" onkeypress="if(event.key === 'Enter') verifyPin()">
+            <div id="pin-error" class="hidden text-red-400 text-xs mb-4">PIN salah, silakan coba lagi.</div>
+            <div id="pin-spacer" class="h-4 mb-4"></div>
+
+            <div class="flex justify-between gap-3">
+                <button onclick="closeAuthModal()" class="w-1/2 px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors bg-slate-700 hover:bg-slate-600 rounded-lg">Batal</button>
+                <button onclick="verifyPin()" class="w-1/2 px-4 py-2 text-sm font-medium bg-purple-600 hover:bg-purple-500 text-white rounded-lg shadow transition-colors">Masuk</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT LOGIKA APLIKASI -->
     <script>
-        const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTEo8kS2-2Xk65WnbrDOS4uF14t-I3LZ-wORtz4Y8_9sfmuLQW3OnFBxIPBr3EpdYCPCF1tSoF1QBfc/pub?output=csv";
+        // PIN Rahasia untuk masuk ke Mode Edit (Ubah sesuai keinginan Anda)
+        const ADMIN_PIN = "wa1921am";
+
+        // Data Default (jika belum ada data di penyimpanan browser)
+        const defaultData = {
+            title: "MGMP Dev Hub",
+            bio: "Selamat datang di halaman kumpulan tautan saya. Silakan pilih salah satu menu di bawah ini untuk melihat portofolio dan proyek saya.",
+            buttons: [
+                { text: "Portofolio Website", url: "https://example.com/portfolio", icon: "fas fa-globe", classColor: "bg-blue-600 hover:bg-blue-500" },
+                { text: "Repository GitHub", url: "https://github.com", icon: "fab fa-github", classColor: "bg-gray-800 hover:bg-gray-700" },
+                { text: "Hubungi via WhatsApp", url: "https://wa.me/6281234567890", icon: "fab fa-whatsapp", classColor: "bg-green-600 hover:bg-green-500" }
+            ]
+        };
+
+        // Ambil data dari Local Storage atau gunakan default
+        let appData = JSON.parse(localStorage.getItem('devHubData')) || defaultData;
         
-        // PENTING: Ganti dengan URL Web App Apps Script Anda yang baru setelah deploy ulang
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx1hmv2BO_AvSS2Yrv4rXl4CQVljCzNORKmFMke0hLX57H05uNDGu1yvKwxDiILTo1IxQ/exec"; 
+        let isEditMode = false;
+        let currentEditIndex = -1; // -1 berarti tambah tombol baru
 
-        const form = document.getElementById('registrationForm');
-        const btn = document.getElementById('submitBtn');
-        const statusMsg = document.getElementById('statusMessage');
-        const komdaSelect = document.getElementById('komda');
-        const kecamatanSelect = document.getElementById('kecamatan');
-        const schoolSelect = document.getElementById('nama_sekolah');
-        const manualSchoolContainer = document.getElementById('manualSchoolContainer');
-        const manualSchoolInput = document.getElementById('nama_sekolah_manual');
-        const dataLoader = document.getElementById('dataLoader');
-        const fileInput = document.getElementById('file_pendukung');
-        const hpInput = document.getElementById('no_hp_penanggung_jawab');
-        const fileError = document.getElementById('fileError');
-        const hpError = document.getElementById('hpError');
-        const closedMessage = document.getElementById('closedMessage');
+        // Inisialisasi saat web dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('year').textContent = new Date().getFullYear();
+            renderApp();
+        });
 
-        // === PENGATURAN BATAS WAKTU PENDAFTARAN ===
-        // Format: YYYY-MM-DDTHH:mm:ss+07:00 (WIB)
-        const DEADLINE = new Date('2026-03-12T20:00:00+07:00');
-        const isClosed = new Date() > DEADLINE;
-
-        // Jika sudah lewat batas waktu, sembunyikan form dan tampilkan pesan tutup
-        if (isClosed) {
-            form.classList.add('hidden');
-            closedMessage.classList.remove('hidden');
+        // Fungsi Simpan ke Local Storage
+        function saveData() {
+            localStorage.setItem('devHubData', JSON.stringify(appData));
         }
 
-        let allSchoolData = [];
-
-        // Fungsi mengecek riwayat pendaftaran di perangkat ini (Local Storage)
-        function checkDuplicateRegistration(schoolName) {
-            if (!schoolName) return false;
-            const registeredSchools = JSON.parse(localStorage.getItem('registeredSchools') || '[]');
-            return registeredSchools.includes(schoolName.trim().toUpperCase());
-        }
-
-        // Fungsi mengatur tampilan jika terdeteksi duplikat
-        function handleDuplicateUI(isDuplicate) {
-            if (isDuplicate) {
-                btn.disabled = true;
-                btn.classList.add('opacity-50', 'cursor-not-allowed');
-                showStatus("⚠️ Sekolah ini sudah pernah didaftarkan. Anda tidak bisa mendaftar dua kali.", "bg-red-100 text-red-700");
+        // Fungsi Meminta Masuk Mode Edit
+        function requestEditMode() {
+            if (isEditMode) {
+                // Jika sedang mode edit, langsung keluar saja
+                isEditMode = false;
+                renderApp();
             } else {
-                btn.disabled = false;
-                btn.classList.remove('opacity-50', 'cursor-not-allowed');
-                statusMsg.classList.add('hidden');
+                // Jika ingin masuk mode edit, minta PIN
+                document.getElementById('auth-modal').classList.remove('hidden');
+                document.getElementById('pin-input').value = '';
+                document.getElementById('pin-error').classList.add('hidden');
+                document.getElementById('pin-spacer').classList.remove('hidden');
+                setTimeout(() => document.getElementById('pin-input').focus(), 100);
             }
         }
 
-        // Fungsi khusus agar pembacaan CSV stabil meski ada karakter koma (,)
-        function parseCSVLine(str) {
-            const arr = [];
-            let quote = false;
-            let col = '';
-            for (let i = 0; i < str.length; i++) {
-                let cc = str[i], nc = str[i+1];
-                if (cc === '"' && quote && nc === '"') { col += cc; ++i; continue; }
-                if (cc === '"') { quote = !quote; continue; }
-                if (cc === ',' && !quote) { arr.push(col); col = ''; continue; }
-                col += cc;
-            }
-            arr.push(col);
-            return arr;
+        // Fungsi Menutup Modal PIN
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
         }
 
-        async function fetchData() {
-            dataLoader.classList.remove('hidden');
-            komdaSelect.disabled = true;
-            try {
-                const response = await fetch(CSV_URL);
-                const data = await response.text();
-                const rows = data.split(/\r?\n/).slice(1); 
-                
-                const komdaSet = new Set();
+        // Fungsi Verifikasi PIN
+        function verifyPin() {
+            const input = document.getElementById('pin-input').value;
+            if (input === ADMIN_PIN) {
+                closeAuthModal();
+                isEditMode = true;
+                renderApp();
+            } else {
+                document.getElementById('pin-error').classList.remove('hidden');
+                document.getElementById('pin-spacer').classList.add('hidden');
+            }
+        }
 
-                rows.forEach(row => {
-                    const cols = parseCSVLine(row);
-                    if (cols.length >= 5) {
-                        const schoolName = cols[0] ? cols[0].trim() : ""; // Kolom A
-                        const kecamatanName = cols[3] ? cols[3].trim() : ""; // Kolom D
-                        const komdaName = cols[4] ? cols[4].trim() : "";  // Kolom E
-                        
-                        if (schoolName && komdaName && kecamatanName) {
-                            allSchoolData.push({ school: schoolName, kecamatan: kecamatanName, komda: komdaName });
-                            komdaSet.add(komdaName);
-                        }
-                    }
+        // Fungsi Render Utama
+        function renderApp() {
+            const titleContainer = document.getElementById('page-title-container');
+            const bioContainer = document.getElementById('page-bio-container');
+            const btnContainer = document.getElementById('button-container');
+            
+            // Atur UI toggle button & badge
+            document.getElementById('toggle-icon').className = isEditMode ? "fas fa-eye text-xl" : "fas fa-cog text-xl";
+            document.getElementById('edit-badge').style.display = isEditMode ? "block" : "none";
+
+            if (isEditMode) {
+                // TAMPILAN MODE EDIT
+                titleContainer.innerHTML = `<input type="text" id="edit-title" value="${appData.title}" class="w-full bg-slate-800/80 border border-purple-500 rounded p-2 text-center text-xl font-bold text-white focus:outline-none" oninput="updateProfileLive()">`;
+                bioContainer.innerHTML = `<textarea id="edit-bio" class="w-full bg-slate-800/80 border border-purple-500 rounded p-2 text-center text-sm text-gray-300 h-24 resize-none focus:outline-none" oninput="updateProfileLive()">${appData.bio}</textarea>`;
+
+                btnContainer.innerHTML = '';
+                appData.buttons.forEach((btn, index) => {
+                    btnContainer.innerHTML += `
+                        <div class="flex items-center justify-between bg-slate-800/60 border border-slate-600 p-3 rounded-xl hover:border-purple-400 transition-colors">
+                            <div class="flex items-center gap-3 overflow-hidden">
+                                <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center"><i class="${btn.icon} text-gray-300"></i></div>
+                                <span class="text-sm font-medium truncate">${btn.text}</span>
+                            </div>
+                            <div class="flex gap-1">
+                                <button onclick="openModal(${index})" class="bg-blue-500/20 text-blue-400 hover:bg-blue-500 hover:text-white p-2 rounded transition-colors"><i class="fas fa-edit"></i></button>
+                                <button onclick="deleteBtn(${index})" class="bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white p-2 rounded transition-colors"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    `;
                 });
 
-                const sortedKomda = Array.from(komdaSet).sort();
-                sortedKomda.forEach(k => {
-                    const option = document.createElement('option');
-                    option.value = k;
-                    option.textContent = k;
-                    komdaSelect.appendChild(option);
-                });
+                // Tombol Tambah Baru
+                btnContainer.innerHTML += `
+                    <button onclick="openModal(-1)" class="w-full py-4 mt-2 border-2 border-dashed border-gray-500 text-gray-400 rounded-xl hover:border-purple-400 hover:text-purple-400 transition-all hover:bg-purple-900/20 font-medium">
+                        <i class="fas fa-plus mr-2"></i> Tambah Tautan Baru
+                    </button>
+                `;
 
-            } catch (error) {
-                console.error("Gagal memuat data:", error);
-            } finally {
-                dataLoader.classList.add('hidden');
-                komdaSelect.disabled = false;
+            } else {
+                // TAMPILAN NORMAL (PENGUNJUNG)
+                titleContainer.innerHTML = `<h1 id="page-title" class="text-2xl font-bold tracking-wide text-gray-100">${appData.title}</h1>`;
+                bioContainer.innerHTML = `<p id="page-bio" class="text-gray-300 text-sm leading-relaxed">${appData.bio}</p>`;
+
+                btnContainer.innerHTML = '';
+                appData.buttons.forEach((btn, index) => {
+                    btnContainer.innerHTML += `
+                        <a href="${btn.url}" target="_blank" rel="noopener noreferrer" 
+                           class="btn-animate flex items-center p-4 rounded-xl text-white font-medium shadow-lg transition-transform duration-200 transform hover:scale-105 active:scale-95 ${btn.classColor}"
+                           style="animation-delay: ${index * 0.1}s">
+                            <div class="w-10 flex justify-center text-xl">
+                                <i class="${btn.icon}"></i>
+                            </div>
+                            <div class="flex-grow text-center pr-10">
+                                ${btn.text}
+                            </div>
+                        </a>
+                    `;
+                });
             }
         }
 
-        // Hanya muat data CSV jika pendaftaran belum ditutup
-        if (!isClosed) {
-            fetchData();
+        // Fungsi Update Profil Secara Langsung
+        function updateProfileLive() {
+            appData.title = document.getElementById('edit-title').value;
+            appData.bio = document.getElementById('edit-bio').value;
+            saveData();
         }
 
-        komdaSelect.addEventListener('change', (e) => {
-            const selectedKomda = e.target.value;
-            kecamatanSelect.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
-            schoolSelect.innerHTML = '<option value="">-- Pilih Kecamatan Terlebih Dahulu --</option>';
+        // Fungsi Hapus Tombol
+        function deleteBtn(index) {
+            if(confirm(`Yakin ingin menghapus tautan "${appData.buttons[index].text}"?`)) {
+                appData.buttons.splice(index, 1);
+                saveData();
+                renderApp();
+            }
+        }
+
+        // Fungsi Buka Modal (Tambah/Edit)
+        function openModal(index) {
+            currentEditIndex = index;
+            const modal = document.getElementById('edit-modal');
             
-            if (selectedKomda) {
-                kecamatanSelect.disabled = false;
-                schoolSelect.disabled = true;
-                
-                const filteredKecamatan = [...new Set(allSchoolData.filter(item => item.komda === selectedKomda).map(item => item.kecamatan))];
-                
-                filteredKecamatan.sort().forEach(kec => {
-                    const option = document.createElement('option');
-                    option.value = kec;
-                    option.textContent = kec;
-                    kecamatanSelect.appendChild(option);
-                });
+            if (index > -1) {
+                // Mode Edit Data Lama
+                const btn = appData.buttons[index];
+                document.getElementById('m-text').value = btn.text;
+                document.getElementById('m-url').value = btn.url;
+                document.getElementById('m-icon').value = btn.icon;
+                document.getElementById('m-color').value = btn.classColor;
+                document.getElementById('modal-title').textContent = "Edit Tautan";
             } else {
-                kecamatanSelect.innerHTML = '<option value="">-- Pilih Komda Terlebih Dahulu --</option>';
-                kecamatanSelect.disabled = true;
-                schoolSelect.disabled = true;
+                // Mode Tambah Data Baru
+                document.getElementById('m-text').value = "";
+                document.getElementById('m-url').value = "https://";
+                document.getElementById('m-icon').value = "fas fa-link";
+                document.getElementById('m-color').value = "bg-blue-600 hover:bg-blue-500";
+                document.getElementById('modal-title').textContent = "Tambah Tautan Baru";
             }
             
-            schoolSelect.dispatchEvent(new Event('change'));
-        });
+            modal.classList.remove('hidden');
+        }
 
-        kecamatanSelect.addEventListener('change', (e) => {
-            const selectedKecamatan = e.target.value;
-            schoolSelect.innerHTML = '<option value="">-- Pilih Sekolah --</option>';
-            
-            if (selectedKecamatan) {
-                schoolSelect.disabled = false;
-                const filteredSchools = allSchoolData.filter(item => item.kecamatan === selectedKecamatan);
-                
-                filteredSchools.sort((a, b) => a.school.localeCompare(b.school)).forEach(item => {
-                    const option = document.createElement('option');
-                    option.value = item.school;
-                    option.textContent = item.school;
-                    schoolSelect.appendChild(option);
-                });
+        // Fungsi Tutup Modal
+        function closeModal() {
+            document.getElementById('edit-modal').classList.add('hidden');
+        }
+
+        // Fungsi Simpan Data Modal
+        function saveModalBtn() {
+            const newBtn = {
+                text: document.getElementById('m-text').value || "Tombol Tanpa Nama",
+                url: document.getElementById('m-url').value || "#",
+                icon: document.getElementById('m-icon').value || "fas fa-link",
+                classColor: document.getElementById('m-color').value || "bg-gray-600 hover:bg-gray-500"
+            };
+
+            if (currentEditIndex > -1) {
+                appData.buttons[currentEditIndex] = newBtn; // Update
             } else {
-                schoolSelect.innerHTML = '<option value="">-- Pilih Kecamatan Terlebih Dahulu --</option>';
-                schoolSelect.disabled = true;
-            }
-            
-            const lainOption = document.createElement('option');
-            lainOption.value = "Lainnya";
-            lainOption.textContent = "Lainnya / Sekolah Tidak Terdaftar";
-            schoolSelect.appendChild(lainOption);
-            
-            schoolSelect.dispatchEvent(new Event('change'));
-        });
-
-        schoolSelect.addEventListener('change', (e) => {
-            if (e.target.value === 'Lainnya') {
-                manualSchoolContainer.classList.remove('hidden');
-                manualSchoolInput.required = true;
-                handleDuplicateUI(false);
-            } else {
-                manualSchoolContainer.classList.add('hidden');
-                manualSchoolInput.required = false;
-                manualSchoolInput.value = "";
-                
-                const isDuplicate = checkDuplicateRegistration(e.target.value);
-                handleDuplicateUI(isDuplicate);
-            }
-        });
-
-        manualSchoolInput.addEventListener('input', (e) => {
-            const isDuplicate = checkDuplicateRegistration(e.target.value);
-            handleDuplicateUI(isDuplicate);
-        });
-
-        // Validasi ekstensi Data Peserta (Excel)
-        fileInput.addEventListener('change', function() {
-            const file = this.files[0];
-            if (file) {
-                const fileName = file.name.toLowerCase();
-                const isExcel = fileName.endsWith('.xlsx') || fileName.endsWith('.xls');
-                if (!isExcel) {
-                    fileError.classList.remove('hidden');
-                    this.value = ''; 
-                } else {
-                    fileError.classList.add('hidden');
-                }
-            }
-        });
-
-        // Validasi No HP (Real-time hapus karakter non-angka)
-        hpInput.addEventListener('input', function() {
-            this.value = this.value.replace(/[^0-9]/g, ''); // Hanya sisakan angka
-            
-            if (this.value.length > 0 && (this.value.length < 10 || this.value.length > 15)) {
-                hpError.classList.remove('hidden');
-            } else {
-                hpError.classList.add('hidden');
-            }
-        });
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            // Verifikasi ganda sebelum submit
-            let finalSchoolName = schoolSelect.value === 'Lainnya' ? manualSchoolInput.value : schoolSelect.value;
-            if (checkDuplicateRegistration(finalSchoolName)) {
-                handleDuplicateUI(true);
-                return;
-            }
-            
-            if (hpInput.value.length < 10 || hpInput.value.length > 15) {
-                hpError.classList.remove('hidden');
-                hpInput.focus();
-                return;
+                appData.buttons.push(newBtn); // Tambah Baru
             }
 
-            if (fileInput.files.length > 0) {
-                const fileName = fileInput.files[0].name.toLowerCase();
-                if (!(fileName.endsWith('.xlsx') || fileName.endsWith('.xls'))) {
-                    fileError.classList.remove('hidden');
-                    return;
-                }
-            }
-
-            btn.disabled = true;
-            btn.innerHTML = '<span class="animate-spin mr-2">⏳</span> Sedang Mengirim...';
-            statusMsg.classList.add('hidden');
-
-            const formData = new FormData(form);
-            const dataObj = Object.fromEntries(formData.entries());
-
-            if (dataObj.nama_sekolah === 'Lainnya') {
-                dataObj.nama_sekolah = dataObj.nama_sekolah_manual;
-            }
-
-            try {
-                // Proses Excel File
-                if (fileInput.files.length > 0) {
-                    const file = fileInput.files[0];
-                    dataObj.file_data = await toBase64(file);
-                    dataObj.file_name = file.name;
-                    dataObj.file_type = file.type;
-                }
-
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: JSON.stringify(dataObj)
-                });
-
-                // Simpan nama sekolah ke Local Storage setelah berhasil
-                const registeredSchools = JSON.parse(localStorage.getItem('registeredSchools') || '[]');
-                if (!registeredSchools.includes(finalSchoolName.trim().toUpperCase())) {
-                    registeredSchools.push(finalSchoolName.trim().toUpperCase());
-                    localStorage.setItem('registeredSchools', JSON.stringify(registeredSchools));
-                }
-
-                // LAKUKAN RESET FORM TERLEBIH DAHULU
-                form.reset();
-                komdaSelect.dispatchEvent(new Event('change')); 
-                manualSchoolContainer.classList.add('hidden');
-                
-                // TAMPILKAN NOTIFIKASI
-                showStatus(`Pendaftaran Berhasil! Terima kasih.<br>Silakan bergabung ke <a href="https://chat.whatsapp.com/LPDfkl7tpES0wbOoWVFhWa" target="_blank" class="font-bold underline text-red-600 hover:text-red-800">Grup WhatsApp</a>.`, "bg-green-100 text-green-700");
-                
-                setTimeout(() => {
-                    statusMsg.classList.add('hidden');
-                }, 30000);
-
-            } catch (err) {
-                showStatus("Gagal mengirim data. Pastikan koneksi internet stabil.", "bg-red-100 text-red-700");
-                setTimeout(() => {
-                    statusMsg.classList.add('hidden');
-                }, 5000);
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = 'Kirim Pendaftaran';
-            }
-        });
-
-        const toBase64 = file => new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result.split(',')[1]);
-            reader.onerror = error => reject(error);
-        });
-
-        function showStatus(msg, classes) {
-            statusMsg.innerHTML = msg;
-            statusMsg.className = `mx-8 mb-8 p-4 rounded-lg text-center font-medium ${classes}`;
-            statusMsg.classList.remove('hidden');
+            saveData();
+            closeModal();
+            renderApp();
         }
     </script>
 </body>
